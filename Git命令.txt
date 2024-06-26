@@ -1,0 +1,303 @@
+配置命令
+    1. 配置用户名和邮箱
+        git config --global user.name "Your Name"
+        git config --global user.email "Your Email"
+    2. 创建SSH Key
+        ssh-keygen -t rsa -C "youremail@example.com"
+
+一. 建立版本库   
+    1. git init     　　
+       把此目录变为git管理仓库 （此时系统自动为我们创建了第一个分支）文件夹内自动生成 .git半隐藏文件夹（用于记录版本更新信息）  
+    2. git init [project-name]
+       新建一个目录，将其初始化为Git代码库
+    3. git clone [url]
+       下载一个项目和它的整个代码历史
+    4. ls -ah       　　
+       用于显示隐藏的.git文件夹 
+
+二. 修改与提交  
+    1. git add text.html   　　 　　
+       在mygitwork目录下建立一个新文件text.html 此命令为把文件添加到仓库 可多次添加不同文件(即把文件添加到暂存区)  
+    2. git commit -m "first commit"  
+       文件提交 -m后面内容是本次提交的说明（如不添加-m则自动弹出git-branch内置编辑器 填写提交说明）（则把暂存区所有内容提交到第一个分支master）  
+    3. git status   　　　　
+       显示工作区状态  
+    4. git diff     　　　　  
+       查询修改内容（若git status显示文件修改过 可用此查询修改内容）  
+    5. git log      　　　　 
+       查看提交历史（最近的三回）  
+    6. git log --pretty=oneline 
+       提交日志简化  （仅显示版本id 和修改提示） 
+
+三. 回退/回退撤销/ 撤销 /删除 
+    1. git reset --hard HEAD^ 
+       回退到上一版本（HEAD为当前版本 HEAD^为上一版本 HEAD^^为上上版本 HEAD~100上100个版本） 
+    2. git reset --hard 126632 
+       反悔回退操作 （此时使用 git log已经查询不到回退前的最新版本了 但是在git branch界面未关闭前提下 找到之前的版本号前几位即可） 
+    3. git reflog  
+       查看命令历史（若上一个反悔回退操作无法进行，则可以使用本操作查询版本号 再次进行反悔回退操作） 
+    4. git checkout --first.txt 
+	    git reset HEAD <file>放弃暂存区的修改
+        撤销（让文件回到最近一次git commit或git add时状态）（工作区的操作） 
+    5. rm first.txt 
+       删除工作区文件（工作区的操作） 
+    6. git rm first.txt
+       删除操作放于暂存区（执行此操作后，git checkout操作无效）
+
+四. 远程库 
+    1. ssh-keygen -t rsa -C example@qq.com" 
+       创建sshkey 然后一路回车
+    2. git remote add origin git@github.com:oabdc/gitwork.git 
+       让本地库与远程库关联 
+    3. git push -u origin master
+       第一次远程推送（-u 可以把本地和远程的master关联，便于以后简化命令） 
+    4. git push origin master
+       远程推送
+    5. git clone git@github.com:oabdc/gitnet.git 
+       克隆一个本地库 
+	6. 解除关联
+		git remote remove origin
+
+
+五. 分支管理 
+    1. git checkout -b dev 
+       创建并切换到dev分支 
+    2. git branch dev 
+       创建分支dev 
+    3. git checkout dev 
+       切换分支到dev 
+    4. git branch 
+       查看当前分支 （系统会列出所有分支 当前分支前会加*号） 
+    5. git merge  dev 
+        合并指定分支到当前分支（切换到master分支 在执行此操作 既可以把dev合并到master）（合并方式 fast-forward 快进模式 此模式删除分之后会丢掉分支信息） 
+    6. git branch -d dev
+       删除dev分支 
+    7. git merge --no-ff -m "merag no-ff" dev
+       (本次使用 no-ff普通模式 合并时生成了一个新的commit 既可以从分支历史上看出分支信息) 
+    8. git log --graph -abbrev-commit 
+       查看分支 且带图 
+    9. git log  --pretty=oneline -abbrev-commit  
+       查看分支历史简化 
+    10. git log --graph --pretty=oneline --abbrev-commit 
+        查看分支历史简化 且带图 
+		
+建议：在master分支上放稳定的版本，开发在dev分支上		
+
+六.bug分支 
+    1. git stash 
+       隐藏当前工作现场 （可以多次stash，即隐藏多个分支工作现场）
+    2. git stash apply 
+       恢复 工作现场 
+    3. git stash drop  
+       删除stash内容 
+    4. git stash pop 
+       恢复同时删除 
+    5. git stash list 
+       查看stash 查看stash内容 
+    6. git stash apply stash@{num} 
+       num为恢复工作现场的编号 
+	   
+	7. cherry-pick 复制一个特定的提交到当前分支
+	   git cherry-pick 4c805e2
+
+七.feature 分支 
+    1. git branch -D <name> 
+       强制删除新建且未被合并的分支 
+
+八.多人协作 
+    1. git remote 
+       查看远程库信息
+    2. git remote -v 
+       查看远程库详细信息 
+    3. git checkout -b dev origin/dev
+       创建本地dev分支
+	   
+	   本地分支与远程分支关联
+	   先创建分支，然后把新建的本地分支push到远程服务器，远程分支与本地分支同名（当然可以随意起名）
+	   git push origin dev（远程分支名）:dev（本地分支名）
+	   
+    4. git branch --set-upstream branch-name origin/branch-name 
+       创建本地与远程分支的链接 
+    5. git pull  
+       从远程库获取最新版本并合并（相当于更新本地库） 
+    6. git fetch 
+       从远程库获取最新版本 
+	   
+	7. 删除远程分支
+		推送一个空分支到远程分支，其实就相当于删除远程分支：
+		git push origin :dbg_lichen_star
+		或者
+		git push origin --delete dbg_lichen_star（远程分支名）
+	
+	
+	获取远程仓库的分支完整的操作：
+		方案1
+			注意：该方式使用前提是，之前已经添加过远程仓库，并且执行过对该仓库的 pull 或者 fetch 操作
+			直接执行 checkout 命令，检出远程分支
+			命令格式：
+				git checkout -b 新的分支名 远程仓库别名/远程仓库分支名
+		
+		方案2
+			注意：该方案不区分远程仓库是新增还是已有，也不区分本地是否执行过对远程仓库的 pull 或者 fetch 操作
+			核心命令：
+				git fetch 远程仓库别名 远程分支名:本地新分支名
+				git checkout 本地新分支名
+		
+		
+		 方案3
+			注意：该方案不区分远程仓库是新增还是已有，也不区分本地是否执行过对远程仓库的 pull 或者 fetch 操作
+			核心命令：
+				git fetch 远程仓库别名 远程分支名
+				git checkout -b 本地新分支名 远程仓库别名/远程分支名
+
+
+
+	多人协作的工作模式通常是这样：
+
+	首先，可以试图用git push origin <branch-name>推送自己的修改；
+
+	如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+
+	如果合并有冲突，则解决冲突，并在本地提交；
+
+	没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+
+	如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，
+	用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。	   
+	  
+	git rebase
+	rebase操作可以把本地未push的分叉提交历史整理成直线；
+
+	rebase的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
+
+九.标签管理 
+	发布一个版本时，我们通常先在版本库中打一个标签（tag），这样，就唯一确定了打标签时刻的版本。
+	将来无论什么时候，取某个标签的版本，就是把那个打标签的时刻的历史版本取出来。所以，标签也是版本库的一个快照。
+	Git的标签虽然是版本库的快照，但其实它就是指向某个commit的指针（跟分支很像对不对？但是分支可以移动，标签不能移动），
+	所以，创建和删除标签都是瞬间完成的。
+	tag就是一个让人容易记住的有意义的名字，它跟某个commit绑在一起。
+	注：标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
+	
+    1. git tag v1.0
+       给当前分支打上标签 （默认标签打在最新提交上的commit） 
+    2. git tag 
+       查看所有标签 
+    3. git tag v0.9 f52c633
+       给此id值（f52c633）的提交打上标签 
+    4. git show v1.3
+       查看此标签的详细信息 
+    5. git tag  -a v1.2 -m "this is a tag" 231231 
+       -a指定标签名  -m指定说明文字 
+    6. git tag -d v1.01
+       删除标签
+    7. git push origin <tagname>
+       推送标签到远程 
+    8. git push origin --tags
+       推送所有未被推送的标签 
+    9. git push origin ：refs/tags/v0.9 
+       删除远程标签（首先删除本地 git tag -d v0.9）
+	   
+十、一个本地库既关联GitHub，又关联Gitee
+	因为git本身是分布式版本控制系统，可以同步到另外一个远程库，当然也可以同步到另外两个远程库。
+	使用多个远程库时，我们要注意，git给远程库起的默认名称是origin，如果有多个远程库，我们需要用不同的名称来标识不同的远程库。
+	
+	以learngit本地库为例，我们先删除已关联的名为origin的远程库：
+	git remote rm origin
+	
+	然后，先关联GitHub的远程库：
+	git remote add github git@github.com:michaelliao/learngit.git
+	注意，远程库的名称叫github，不叫origin了。
+
+	接着，再关联Gitee的远程库：
+	git remote add gitee git@gitee.com:liaoxuefeng/learngit.git
+	同样注意，远程库的名称叫gitee，不叫origin。
+
+	现在，我们用git remote -v查看远程库信息，可以看到两个远程库：
+
+	git remote -v
+	gitee	git@gitee.com:liaoxuefeng/learngit.git (fetch)
+	gitee	git@gitee.com:liaoxuefeng/learngit.git (push)
+	github	git@github.com:michaelliao/learngit.git (fetch)
+	github	git@github.com:michaelliao/learngit.git (push)
+	
+	如果要推送到GitHub，使用命令：
+	git push github master
+	
+	如果要推送到Gitee，使用命令：
+	git push gitee master
+	
+	
+	修改git commit 提交后的备注信息
+		为了更好的解释提交信息，我们需要修改已经通过git commit -m '备注'提交到缓存区的备注信息。我们可以通过如下命令来修改：
+		git commit --amend
+		命令执行完之后会进入备注修改的界面，这个界面是 vi 环境的， 进行修改
+		最后按照正常的流程将本地git推送到远端即可
+		git push origin 分支名
+
+
+报错解决：
+1 git pull 时报错refusing to merge unrelated histories
+	git pull origin master --allow-unrelated-histories
+
+
+2 删除文件
+	1. 本地修改了一些文件 (并没有使用 git add 到暂存区)，想放弃修改
+	单个文件/文件夹：
+
+	 git checkout -- filename
+	1
+	所有文件/文件夹：
+
+	git checkout .
+	1
+	2. 本地新增了一些文件 (并没有 git add 到暂存区)，想放弃修改
+	单个文件/文件夹：
+
+	rm  -rf filename
+	1
+	所有文件：
+
+	git clean -xdf
+	1
+	删除新增的文件，如果文件已经已经 git add 到暂存区，并不会删除！
+
+	所有文件和文件夹：
+
+	git clean -xdff
+	1
+	[谨慎操作] 本命令删除新增的文件和文件夹，如果文件已经已经 git add 到暂存区，并不会删除！
+
+	3. 本地修改/新增了一些文件，已经 git add 到暂存区，想放弃修改
+	单个文件/文件夹：
+
+	git reset HEAD filename
+	1
+	所有文件/文件夹：
+
+	git reset HEAD .
+	1
+	4. 本地通过 git add 和 git commit 后，想要撤销此次 commit
+	撤销 commit, 同时保留该 commit 修改：
+
+	git reset commit_id
+	1
+	这个 commit_id 是你想要回到的那个节点，可以通过 git log 查看，可以只选前 6 位。
+
+	撤销之后，你所做的已经 commit 的修改还在工作区！
+
+	撤销 commit, 同时本地删除该 commit 修改：
+
+	git reset --hard commit_id
+	1
+	这个 commit_id 是你想要回到的那个节点，可以通过 git log 查看，可以只选前6位
+
+	[谨慎操作] 撤销之后，你所做的已经 commit 的修改将会清除，仍在工作区/暂存区的代码也将会清除！
+
+3 比较两个分支的差异
+Git diff branch1 branch2 --stat   //显示出所有有差异的文件列表
+
+Git diff branch1 branch2 文件名(带路径)   //显示指定文件的详细差异
+
+Git diff branch1 branch2                   //显示出所有有差异的文件的详细差异
+
+git check-ignore 检查.gitignore文件语法
